@@ -1,5 +1,6 @@
 ﻿using ChessChallenge.API;
 using ChessChallenge.Application;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -55,96 +56,48 @@ public class MyBot : IChessBot
 
     private Move GoToAnotherPiece()
     {
+        PieceType typeToCheck;
         //if no valid moves then go to a random move
         int val = rnd.Next(0, 12);
         switch (val)
         {
             case 10: case 11:
-                return TryPawnMove();
+                typeToCheck = PieceType.Pawn;
+                break;
             case 8: case 9:
-                return TryKnightMove();
+                typeToCheck = PieceType.Knight;
+                break;
             case 6: case 7:
-                return TryBishopMove();
+                typeToCheck = PieceType.Bishop;
+                break;
             case 4: case 5:
-                return TryRookMove();
+                typeToCheck = PieceType.Rook;
+                break;
             case 2: case 3:
-                return TryQueenMove();
+                typeToCheck = PieceType.Queen;
+                break;
             case 0: case 1:
-                return TryKingMove();
+                typeToCheck = PieceType.King;
+                break;
             default:
-                return Move.NullMove;
+                typeToCheck = PieceType.None;
+                break;
         }
+
+        return TryMove(typeToCheck);
     }
 
-
-
-    private Move TryPawnMove()
+    private bool NeedToRedirect(PieceType type)
     {
-        if (pieceMoves[PieceType.Pawn].Count == 0)
-        {
-            //if no valid moves then go to a random move
-            return GoToAnotherPiece();
-        }
-
-        List<Move> moves = pieceMoves[PieceType.Pawn];
-        return moves[rnd.Next(moves.Count)];
+        return pieceMoves[type].Count == 0;
     }
 
-    private Move TryKnightMove()
+    private Move TryMove(PieceType type)
     {
-        if (pieceMoves[PieceType.Knight].Count == 0)
-        {
-            return GoToAnotherPiece();
-        }
-
-        List<Move> moves = pieceMoves[PieceType.Knight];
-        return moves[rnd.Next(moves.Count)];
+        List<Move> moves = pieceMoves[type];
+        return NeedToRedirect(type)? GoToAnotherPiece(): moves[rnd.Next(moves.Count)];
     }
 
-    private Move TryBishopMove()
-    {
-        if (pieceMoves[PieceType.Bishop].Count == 0)
-        {
-            return GoToAnotherPiece();
-        }
-
-        List<Move> moves = pieceMoves[PieceType.Bishop];
-        return moves[rnd.Next(moves.Count)];
-    }
-
-    private Move TryRookMove()
-    {
-        if (pieceMoves[PieceType.Rook].Count == 0)
-        {
-            return GoToAnotherPiece();
-        }
-
-        List<Move> moves = pieceMoves[PieceType.Rook];
-        return moves[rnd.Next(moves.Count)];
-    }
-
-    private Move TryQueenMove()
-    {
-        if (pieceMoves[PieceType.Queen].Count == 0)
-        {
-            return GoToAnotherPiece();
-        }
-
-        List<Move> moves = pieceMoves[PieceType.Queen];
-        return moves[rnd.Next(moves.Count)];
-    }
-
-    private Move TryKingMove()
-    {
-        if (pieceMoves[PieceType.King].Count == 0)
-        {
-            return GoToAnotherPiece();
-        }
-
-
-        List<Move> moves = pieceMoves[PieceType.King];
-        return moves[rnd.Next(moves.Count)];
-    }
 
     private void CheckForAnyPiecesInDanger(Dictionary<PieceType, List<Move>> movesList)
     {
