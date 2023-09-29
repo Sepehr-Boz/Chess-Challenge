@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Chess-Challenge": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\Sepehr\\source\\repos\\Chess-Challenge\\Chess-Challenge"
+    }
+  }
+}
